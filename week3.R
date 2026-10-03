@@ -307,3 +307,4 @@ ggplot(Pitching_task1b, aes(y = salary)) +
 #dataset and more than 5 Games Started in the Pitching dataset in the same year. 
 #Join with another dataset to add their names. What type of *_join() 
 #should we be using here
+# Comparing to exercise 1 it its easy
