@@ -31,4 +31,10 @@ One thing I found interesting is how joins deal with missing values. If one tabl
 ### 28.9.2026
 I am starting to notice that R is less about writing complicated code and more about understanding what the data represents. Once the dataset is structured correctly, operations such as filtering, joining and plotting are relatively straightforward. The difficult part is deciding how the data should be grouped or summarised before applying those operations.
 ### 03/10/2026
-Qhilw listeinig Andrew I was thinking on why CSV not json?
+While listeinig Andrew's Video I was thinking on why CSV not json?
+### 04/10/2026
+I am starting to understand that most of the difficulty in R is not the syntax itself, but understanding what R is actually doing to the data. pivot_longer() was a good example. At first it looked like an unnecessary way of making the table much longer, but I can now see why long format is useful for plotting and grouping. I still think it is worth remembering that this convenience comes at a cost, because with a very large dataset the number of rows could increase dramatically.
+
+Factors were also less obvious than I expected. I originally assumed that factor levels would somehow represent a logical order, but R simply uses the order of the levels it is given, often alphabetical. fct_rev() does not make that order more meaningful, it literally just reverses it. That made me realise that I need to understand what the categories actually represent before deciding how they should be ordered.
+
+Another thing I noticed is that similar-looking plotting functions can behave quite differently. geom_bar() counts observations itself, while geom_col() expects me to provide the values. The error message was confusing at first, but after understanding that distinction it actually made sense.
