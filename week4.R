@@ -122,3 +122,10 @@ favourite_subject
 ggplot(favourite_subject, aes(x=subject, y=average_mark))+
   geom_col()
 #economics Rules?
+
+ggplot(student_marks_shoveled, aes(x=student, y=mark, fill=subject)) +
+  geom_hline(yintercept = 50, col="red", linetype = "dashed")+
+  geom_col()+
+  facet_wrap(vars(subject))
+
+#actually example frm the video looks nicer
