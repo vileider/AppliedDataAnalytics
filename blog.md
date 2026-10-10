@@ -38,3 +38,10 @@ I am starting to understand that most of the difficulty in R is not the syntax i
 Factors were also less obvious than I expected. I originally assumed that factor levels would somehow represent a logical order, but R simply uses the order of the levels it is given, often alphabetical. fct_rev() does not make that order more meaningful, it literally just reverses it. That made me realise that I need to understand what the categories actually represent before deciding how they should be ordered.
 
 Another thing I noticed is that similar-looking plotting functions can behave quite differently. geom_bar() counts observations itself, while geom_col() expects me to provide the values. The error message was confusing at first, but after understanding that distinction it actually made sense.
+
+### 10/10/2026
+Today I explored how regular expressions are handled in R using stringr. The regex syntax itself is familiar, but combining str_detect() with dplyr functions such as filter() and if_any() was useful. In particular, if_any() provides a clean way of applying the same condition across a selection of columns without repeating the same expression for each one.
+
+I also spent more time working with factors. What stood out to me is that factor levels are not inherently meaningful; their order needs to reflect the context of the data. Functions such as fct_rev() and fct_infreq() are useful for manipulating that order, but they do not replace the need to decide what the correct ordering should actually represent.
+
+Another useful point was around project structure. Hard-coded setwd() paths work, but they reduce portability. Using an RStudio Project with relative paths is a much cleaner approach, particularly when the same code may be used across Windows and Linux system
