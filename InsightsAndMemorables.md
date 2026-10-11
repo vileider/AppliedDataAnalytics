@@ -86,3 +86,57 @@ R does not understand the meaning of categories. If I want a meaningful order, I
 Looks horrible at first, but it is mostly small rules combined together.
 ### if_any()
 Instead of checking every column separately, I can apply the same condition to all of them.
+
+Jasne. Zrobiłbym to w Twoim dotychczasowym stylu: Insights = krótkie techniczne notatki, Memorables = rzeczy, które szczególnie zwróciły uwagę, a log bardziej jako Twoje faktyczne obserwacje, nie tutorial dla początkującego.
+Insights
+### regex with multiple columns
+filter(
+  if_any(
+    everything(),
+    ~ str_detect(as.character(.x), "pattern")
+  )
+)
+
+if_any() applies the condition to selected columns and keeps the row if at least one matches.
+### checking if values can become numeric
+filter(
+  if_any(
+    3:7,
+    ~ !is.na(.x) &
+      is.na(suppressWarnings(as.numeric(.x)))
+  )
+)
+
+Useful for finding values which will break numeric conversion before actually converting the dataset.
+
+### cleaning strings before numeric conversion
+str_replace_all(.x, "\\*", "")
+
+removes *
+str_replace_all(.x, "---", NA_character_)
+
+changes missing-value markers into proper NA.
+Braemar had an additional problem:
+#NAME?
+
+in sun (hours).
+### warning: NAs introduced by coercion
+NAs introduced by coercion
+
+does not necessarily mean that as.numeric() is the problem.
+It usually means there is still some non-numeric content in the column which should be investigated before conversion.
+### make a date from year and month
+make_date(
+  year = yyyy,
+  month = mm,
+  day = 1
+)
+
+Useful when the dataset stores year and month separately but I want to analyse it as a time series.
+### monthly vs yearly temperature
+Monthly data contains a strong seasonal pattern, which can hide a much smaller long-term trend.
+Grouping by year and calculating a yearly average makes the long-term trend easier to see:
+group_by(year) %>%
+summarise(
+  average_yearly_temp = mean(average_temp, na.rm = TRUE)
+)

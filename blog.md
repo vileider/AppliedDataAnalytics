@@ -45,3 +45,12 @@ Today I explored how regular expressions are handled in R using stringr. The reg
 I also spent more time working with factors. What stood out to me is that factor levels are not inherently meaningful; their order needs to reflect the context of the data. Functions such as fct_rev() and fct_infreq() are useful for manipulating that order, but they do not replace the need to decide what the correct ordering should actually represent.
 
 Another useful point was around project structure. Hard-coded setwd() paths work, but they reduce portability. Using an RStudio Project with relative paths is a much cleaner approach, particularly when the same code may be used across Windows and Linux system
+
+### 11/10/2026
+Today was mainly about data cleaning rather than writing complicated R code. One thing that stood out was how useful warnings can be. When as.numeric() reported that it had introduced NA values, instead of just suppressing the warning I used it to identify which original values could not be converted. This exposed an additional #NAME? problem in the Braemar dataset that was not present in Nairn.
+
+I also noticed that it is much better to investigate problematic values before converting columns to numeric. After conversion, an invalid string simply becomes NA, which removes the evidence of what was actually wrong with the source data.
+
+The weather data also demonstrated how the level of aggregation changes what can be seen in a plot. Monthly values mainly showed the seasonal cycle, while yearly averages made the longer-term temperature changes easier to inspect. It was a useful reminder that choosing the correct representation of the data can matter as much as the plotting function itself.
+
+The extension also made me think about making the cleaning reusable as a function. The common cleaning steps can be automated, but the results still need to be validated because different datasets may contain additional problems.
