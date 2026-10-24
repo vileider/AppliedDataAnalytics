@@ -140,3 +140,78 @@ group_by(year) %>%
 summarise(
   average_yearly_temp = mean(average_temp, na.rm = TRUE)
 )
+
+# Insights
+
+### basic R function syntax
+
+name <- function(arguments) {
+  body
+}
+
+The last evaluated expression is returned automatically, so an explicit return() is not always needed.
+
+### functions can operate directly on vectors
+
+subtract_vector <- function(vect1, vect2) {
+  vect2 - vect1
+}
+
+R applies the subtraction element by element without requiring a loop.
+
+a <- c(1, 3)
+b <- c(4, 6)
+
+subtract_vector(a, b)
+# 3 3
+
+### str_flatten()
+
+R for Data Science, Chapter 14.3.3:
+
+str_flatten(c("x", "y", "z"))
+# "xyz"
+
+Useful for converting a character vector into one string.
+
+stick_together <- function(chars) {
+  str_flatten(chars)
+}
+
+### str_flatten() with separator
+
+str_flatten(c("x", "y", "z"), " ")
+
+allows the same vector to be joined using a separator.
+
+This makes it easy to control whether the result behaves like a word or a phrase.
+
+is_it_phrase <- function(chars, is_it) {
+  if (is_it) {
+    str_flatten(chars, " ")
+  } else {
+    str_flatten(chars)
+  }
+}
+
+# Memorables
+
+R functions feel very familiar compared with other languages
+
+The syntax is different, but arguments, conditions and reusable logic work in the same general way as functions in Python, C# or JavaScript.
+
+Vectorisation changes how small functions are designed
+
+For something such as subtracting two numeric vectors, I do not need to iterate through them manually. R performs the operation element by element.
+
+The wording of the requirement matters
+
+“Subtract the first from the second” means:
+
+second - first
+
+rather than first - second.
+
+Existing functions can form the core of my own functions
+
+Instead of manually concatenating character values, I can use str_flatten() inside a function and add my own behaviour around it.

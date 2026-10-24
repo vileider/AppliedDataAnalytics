@@ -54,3 +54,9 @@ I also noticed that it is much better to investigate problematic values before c
 The weather data also demonstrated how the level of aggregation changes what can be seen in a plot. Monthly values mainly showed the seasonal cycle, while yearly averages made the longer-term temperature changes easier to inspect. It was a useful reminder that choosing the correct representation of the data can matter as much as the plotting function itself.
 
 The extension also made me think about making the cleaning reusable as a function. The common cleaning steps can be automated, but the results still need to be validated because different datasets may contain additional problems.
+
+### 24/10/2026
+
+Today I started working with custom functions in R. Coming from other programming languages, the general idea is familiar, but one noticeable difference is how naturally R functions operate on vectors. For example, subtracting two vectors does not require any explicit iteration because the operation is already vectorised.
+
+I also used str_flatten() from R for Data Science to build a function that joins a character vector. Extending it with a Boolean argument made the function choose between joining characters directly or inserting spaces to create a phrase. This felt much closer to normal application programming than some of the earlier R exercises, because I was starting to wrap existing functionality into reusable behaviour rather than only transforming datasets.
