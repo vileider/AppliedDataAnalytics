@@ -60,3 +60,13 @@ The extension also made me think about making the cleaning reusable as a functio
 Today I started working with custom functions in R. Coming from other programming languages, the general idea is familiar, but one noticeable difference is how naturally R functions operate on vectors. For example, subtracting two vectors does not require any explicit iteration because the operation is already vectorised.
 
 I also used str_flatten() from R for Data Science to build a function that joins a character vector. Extending it with a Boolean argument made the function choose between joining characters directly or inserting spaces to create a phrase. This felt much closer to normal application programming than some of the earlier R exercises, because I was starting to wrap existing functionality into reusable behaviour rather than only transforming datasets.
+
+### 25/10/2026
+
+Today I continued working with custom functions and ended up spending more time on edge cases than on the original exercises, which was probably the more useful part.
+
+The median function was a good example. The basic implementation worked for normal even and odd vectors and I reused my earlier mean function for the two middle values. However, testing a vector containing only NA values exposed a problem I had not considered. After removing the missing values, the vector had a length of zero, and my original is_even() function classified zero as even. This sent the function down the wrong branch and eventually produced NaN.
+
+Rather than patching the final result, I changed the helper logic so that positive even and odd lengths are handled separately and an empty vector reaches its own branch. This also made me think about the difference between displaying an error message and what a function should actually return. Returning a string from a function that normally returns numbers would make it awkward to use later, so displaying a message while returning NA seems much cleaner.
+
+I also found myself naturally splitting the median implementation into smaller functions and reusing temp_mean2() rather than repeating the same calculation.

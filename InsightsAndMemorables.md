@@ -215,3 +215,106 @@ rather than first - second.
 Existing functions can form the core of my own functions
 
 Instead of manually concatenating character values, I can use str_flatten() inside a function and add my own behaviour around it.
+
+# Insights
+
+### vector operations inside functions
+
+R applies arithmetic directly across vectors:
+
+subtract_vector <- function(vect1, vect2) {
+  vect2 - vect1
+}
+
+No explicit loop is required.
+
+### filtering NA from a vector
+
+new_var <- var[!is.na(var)]
+
+This is conceptually similar to JavaScript:
+
+var.filter(x => x != null)
+
+It keeps the rest of the function cleaner because missing values are removed before calculations start.
+
+### own mean function
+
+temp_mean2 <- function(var) {
+  new_var <- var[!is.na(var)]
+  sum(new_var) / length(new_var)
+}
+
+I could make this shorter, but separating the cleaning step makes the logic easier to read.
+
+### even / odd helper functions
+
+is_even2 <- function(number) {
+  number > 0 && number %% 2 == 0
+}
+
+is_odd <- function(number) {
+  number > 0 && number %% 2 != 0
+}
+
+%% returns the remainder from division.
+
+An important edge case is that mathematically 0 %% 2 == 0, so simply checking modulo treats zero as even.
+
+### median logic
+
+For an odd number of values:
+
+new_var[(n + 1) / 2]
+
+For an even number of values, take the two middle values and calculate their mean.
+
+The vector needs to be sorted first:
+
+new_var <- sort(new_var)
+
+### message + NA
+
+A function should preferably keep a consistent return type.
+
+Instead of returning an error message as the result:
+
+"Sorry..."
+
+I can display the message and return NA:
+
+message("Sorry, but your vector is empty or contains only missing values.")
+NA
+
+# Memorables
+
+Zero broke my first median exception handling
+
+After filtering:
+
+c(NA, NA)
+
+the vector becomes empty and:
+
+length(new_var)
+
+returns 0.
+
+My original is_even() considered zero even, so the function entered the even branch instead of the empty-vector branch and eventually returned NaN.
+
+NA and NaN are not the same problem
+
+NA represents a missing value, while NaN can be produced by an undefined numeric calculation such as 0 / 0.
+
+In this case, returning NA makes more sense because the median is unavailable because there are no usable observations.
+
+Helper functions improved the median implementation
+
+Instead of putting everything into temp_median(), I separated is_even(), is_odd() and reused temp_mean2().
+
+This made the logic easier to follow and made the edge case easier to debug.
+
+Vectorisation removes a lot of boilerplate
+
+Operations that I would normally think about in terms of iteration in another language often operate directly on whole vectors in R.
+
