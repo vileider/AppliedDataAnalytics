@@ -70,3 +70,21 @@ The median function was a good example. The basic implementation worked for norm
 Rather than patching the final result, I changed the helper logic so that positive even and odd lengths are handled separately and an empty vector reaches its own branch. This also made me think about the difference between displaying an error message and what a function should actually return. Returning a string from a function that normally returns numbers would make it awkward to use later, so displaying a message while returning NA seems much cleaner.
 
 I also found myself naturally splitting the median implementation into smaller functions and reusing temp_mean2() rather than repeating the same calculation.
+
+
+### 8/11/2026
+I started by checking which columns looked like they should be numeric. Rather than assuming that columns 3–7 were clean numbers, I created check_numeric_columns() to calculate what percentage of each column could be interpreted as numeric. This immediately showed that the weather columns were around 98–99% numeric, while the extra ...8 column was completely different.
+
+I then created inspect_column() to investigate individual columns and see both the values and how frequently they occurred. This was useful for ...8, where most values were NA and only a small number were marked Provisional or ||. I decided not to keep this column in the cleaned dataset.
+
+I also created reusable functions for changing column types and combining columns. Combining yyyy and mm exposed an interesting problem: a standard R Date needs a day, while my data only represents months. Instead of inventing a day, I used the zoo package and added yearmon support to my type-conversion function.
+
+The next step was removing rows where weather measurements could not be converted to numeric values. I first inspected the columns and found that --- was the main non-numeric value. I used a loop over a vector of weather-column names rather than repeating the same function call five times.
+
+Once the individual steps worked, I combined them into read_clean_weather(filepath). This made it possible to give the function a filename and receive a cleaned dataset back. I then moved the functions into a separate .R file and loaded them using source().
+
+The best test was applying the same code to dunstaffnage_raw.tsv. It worked without needing a separate cleaning script, which was really the point of refactoring the original Nairn work into reusable functions.
+
+For the extension task I modified the row-cleaning function to use tidy evaluation. Using {{columns}} allowed me to pass several unquoted column names directly into the function and use if_all() instead of looping through them individually. This reminded me a little of passing property references or expressions around in JavaScript, although R handles it through tidy evaluation rather than normal object indexing.
+
+One thing I would still consider is whether removing an entire row whenever one weather measurement is missing is the best cleaning decision. It produces a completely numeric dataset, but it also removes information from the other measurements in that month. Replacing unavailable measurements with NA could preserve more of the original dataset.

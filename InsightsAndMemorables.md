@@ -318,3 +318,141 @@ Vectorisation removes a lot of boilerplate
 
 Operations that I would normally think about in terms of iteration in another language often operate directly on whole vectors in R.
 
+### Checking whether columns are potentially numeric
+
+Instead of assuming a character column should be numeric, calculate how much of it can be parsed:
+
+```r
+check_numeric_columns <- function(dataset) {
+  dataset %>%
+    summarise(
+      across(
+        everything(),
+        ~ round(
+          mean(
+            !is.na(suppressWarnings(parse_number(as.character(.x))))
+          ) * 100,
+          2
+        )
+      )
+    ) %>%
+    pivot_longer(
+      everything(),
+      names_to = "column",
+      values_to = "numeric_percentage"
+    )
+}
+```
+
+This is diagnostic rather than cleaning: it shows which columns deserve further investigation.
+
+### Inspecting values inside one column
+
+```r
+inspect_column <- function(dataset, column) {
+  dataset %>%
+    count(
+      value = .data[[column]],
+      name = "count",
+      sort = TRUE
+    ) %>%
+    mutate(
+      percentage = round(count / sum(count) * 100, 2)
+    )
+}
+```
+
+`.data[[column]]` is useful when the column name is supplied as a string.
+
+### Generic type conversion
+
+```r
+change_column_type <- function(dataset, column, newType) {
+  converter <- switch(
+    newType,
+    "double" = as.double,
+    "integer" = as.integer,
+    "character" = as.character,
+    "date" = as.Date,
+    "yearmon" = function(x) zoo::as.yearmon(x, format = "%Y-%m"),
+    stop("Unsupported data type")
+  )
+
+  dataset[[column]] <- converter(dataset[[column]])
+
+  return(dataset)
+}
+```
+
+`switch()` lets one function select different conversion functions instead of creating a separate function for every type.
+
+### Month data is not necessarily a Date
+
+`1931-1` represents a year and month, not a specific day. Standard `Date` expects a complete date, so `zoo::yearmon` is a better representation when the source data has monthly resolution.
+
+### Reusing a sequence of cleaning operations
+
+```r
+read_clean_weather("datasets/nairn_raw.tsv")
+read_clean_weather("datasets/dunstaffnage_raw.tsv")
+```
+
+A filepath argument means the cleaning logic does not need to know which specific weather station is being processed.
+
+### Tidy evaluation
+
+String-based column selection:
+
+```r
+.data[[column]]
+```
+
+Tidy-evaluation column selection:
+
+```r
+{{columns}}
+```
+
+Example:
+
+```r
+remove_non_numeric_rows_tidy <- function(dataset, columns) {
+  dataset %>%
+    filter(
+      if_all(
+        {{columns}},
+        ~ !is.na(suppressWarnings(as.numeric(.x)))
+      )
+    )
+}
+```
+
+This allows:
+
+```r
+remove_non_numeric_rows_tidy(
+  my_dataset,
+  c(`tmax (degC)`, `tmin (degC)`, `rain (mm)`)
+)
+```
+
+without passing the names as character strings.
+
+- A column being `<chr>` does not mean the data is really textual. A small number of bad values can force an otherwise numeric column to be read as character.
+
+- Before cleaning strange values, inspect them. It is better to discover that `---` is the actual problem than to write a cleaning function for imaginary characters.
+
+- `Date` represents a day. If the source data only contains year and month, forcing it into `Date` means inventing information that was not present.
+
+- A function that works on one dataset is not necessarily reusable. Testing the same function on Dunstaffnage was more useful than simply getting Nairn to work.
+
+- Diagnostic functions and transformation functions have different jobs. `inspect_column()` returns information about a dataset; it should not overwrite the dataset being inspected.
+
+- If a function returns a changed dataset, the result still needs to be assigned:
+  ```r
+  my_dataset <- change_column_type(...)
+  ```
+
+- Removing invalid rows makes a dataset look clean, but “clean” and “information-preserving” are not the same thing.
+
+- `{{columns}}` is useful when I want a function to receive actual tidyverse column expressions rather than column names stored as strings.
