@@ -1,90 +1,88 @@
-# 12/0/2026
-I had to install everything again due to technical issues, but it allowed me to take another look at packages, IDEs, and alternative ways of installing packages.
+12/0/2026
+I had to install everything again because of some technical issues. At least this gave me another opportunity to look at packages, IDEs and different ways of installing packages.
 
-RStudio seems a bit odd at first glance. I can’t get dark mode working, so I will work with both VS Code and RStudio.
+RStudio looks a bit strange to me at first. I could not get dark mode working, so for now I will use both VS Code and RStudio.
 
-The best data visualisation for me so far is geom_hex().
-
-Also, facet_wrap() shows more possibilities for viewing different parts of a dataset at the same time.
-
-# 19/9/2026
-code
-```
+The visualisation I like the most so far is geom_hex(). I also like facet_wrap() because it allows me to look at different parts of the dataset at the same time.
+19/9/2026
 library(tidyverse)
+
 names(starwars)
-select(starwars,name,homeworld,species)
-```
- ```names``` are executed and then 
-starwars  `shrink` into 3 collumns
 
-# 20/9/2026
-One of my main insights from this exercise was seeing the relationship between wind speed and pressure. For Hurricane Andrew, the plot showed that as pressure decreased, wind speed generally increased. I found geom_smooth() more useful than simply connecting the points with a line because it made the overall trend much easier to see.
+select(starwars, name, homeworld, species)
 
-I also really liked using the leaflet library. Plotting latitude and longitude on an actual interactive map made much more sense than treating them as normal x and y values. Being able to zoom in and follow the storm path made the data much easier to understand and showed me how useful R can be for geographical data visualisation.
+names(starwars) shows the column names. Then select() reduces the dataset to three columns: name, homeworld and species.
+20/9/2026
+In the Hurricane Andrew exercise, I could see a relationship between wind speed and pressure. When pressure decreased, the wind speed generally increased.
 
-# 26/9/2026
-My main thought about joins is that at first they looked more confusing than they actually are. The important thing is that the whole row does not need to be identical. The join only compares the columns we choose as keys, for example playerID and yearID.
+I found geom_smooth() more useful than just connecting the points with a line because it was easier to see the overall trend.
 
-I also realised that the different joins are mainly about deciding which rows should stay. inner_join() keeps only matching records from both tables, left_join() keeps everything from the left table, while semi_join() works more like a filter because it keeps matching rows from the left table without adding columns from the right table.
+I also liked using the leaflet library. Plotting latitude and longitude on an interactive map made more sense to me than looking at them as normal x and y values. I could zoom in and follow the path of the storm.
+26/9/2026
+At first, joins looked more complicated than they actually are. I initially thought that the whole row needed to match, but the join only compares the columns selected as keys, for example playerID and yearID.
 
-One thing I found interesting is how joins deal with missing values. If one table has NA in a key column, R cannot simply take the value from the other table because there may be more than one possible match. At first this seemed unnecessary, but it makes sense because automatically filling missing values could easily create incorrect data.
-### 28.9.2026
-I am starting to notice that R is less about writing complicated code and more about understanding what the data represents. Once the dataset is structured correctly, operations such as filtering, joining and plotting are relatively straightforward. The difficult part is deciding how the data should be grouped or summarised before applying those operations.
-### 03/10/2026
-While listeinig Andrew's Video I was thinking on why CSV not json?
-### 04/10/2026
-I am starting to understand that most of the difficulty in R is not the syntax itself, but understanding what R is actually doing to the data. pivot_longer() was a good example. At first it looked like an unnecessary way of making the table much longer, but I can now see why long format is useful for plotting and grouping. I still think it is worth remembering that this convenience comes at a cost, because with a very large dataset the number of rows could increase dramatically.
+The different joins decide which rows are kept. inner_join() keeps matching rows from both tables, while left_join() keeps all rows from the left table. semi_join() is a bit different because it filters the left table based on matches, but does not add columns from the right table.
 
-Factors were also less obvious than I expected. I originally assumed that factor levels would somehow represent a logical order, but R simply uses the order of the levels it is given, often alphabetical. fct_rev() does not make that order more meaningful, it literally just reverses it. That made me realise that I need to understand what the categories actually represent before deciding how they should be ordered.
+Missing values in join columns also need attention. By default, dplyr can match an NA key with another NA key. This does not mean the missing values have been filled in, and I need to think about whether matching them makes sense for my data.
+28/9/2026
+I am starting to see that working with R is not only about writing code. Understanding the data is important as well. Filtering, joining and plotting are easier once I know how the data is structured, but I still need to decide how to group or summarise it.
+03/10/2026
+While listening to Andrew’s video, I was wondering why CSV is used instead of JSON.
+04/10/2026
+pivot_longer() was confusing at first because it looked like it was just making the table longer. Now I can see why long format can be useful for plotting and grouping.
 
-Another thing I noticed is that similar-looking plotting functions can behave quite differently. geom_bar() counts observations itself, while geom_col() expects me to provide the values. The error message was confusing at first, but after understanding that distinction it actually made sense.
+I am still thinking about the cost of this with a very large dataset, because the number of rows can increase a lot.
 
-### 10/10/2026
-Today I explored how regular expressions are handled in R using stringr. The regex syntax itself is familiar, but combining str_detect() with dplyr functions such as filter() and if_any() was useful. In particular, if_any() provides a clean way of applying the same condition across a selection of columns without repeating the same expression for each one.
+I also spent some time on factors. I originally thought factor levels would automatically have a logical order, but that is not necessarily the case. fct_rev() just reverses the existing order; it does not decide what the correct order should be.
 
-I also spent more time working with factors. What stood out to me is that factor levels are not inherently meaningful; their order needs to reflect the context of the data. Functions such as fct_rev() and fct_infreq() are useful for manipulating that order, but they do not replace the need to decide what the correct ordering should actually represent.
+Another thing I learned is the difference between geom_bar() and geom_col(). geom_bar() counts observations, while geom_col() uses values that are already in the data. The error message confused me at first, but the difference makes sense now.
+10/10/2026
+Today I worked with regular expressions using stringr. Regex itself is familiar to me, but using str_detect() with filter() and if_any() was new. if_any() was useful because I could apply the same condition to several columns without writing it separately for each one.
 
-Another useful point was around project structure. Hard-coded setwd() paths work, but they reduce portability. Using an RStudio Project with relative paths is a much cleaner approach, particularly when the same code may be used across Windows and Linux system
+I also continued working with factors. Functions such as fct_rev() and fct_infreq() can change their order, but I still need to decide which order makes sense for the data.
 
-### 11/10/2026
-Today was mainly about data cleaning rather than writing complicated R code. One thing that stood out was how useful warnings can be. When as.numeric() reported that it had introduced NA values, instead of just suppressing the warning I used it to identify which original values could not be converted. This exposed an additional #NAME? problem in the Braemar dataset that was not present in Nairn.
+I looked at project structure as well. Hard-coded setwd() paths can work on my computer, but they can cause problems if I move the code somewhere else. An RStudio Project with relative paths seems more practical, especially when working across Windows and Linux.
+11/10/2026
+Today I spent more time cleaning data than writing complicated code.
 
-I also noticed that it is much better to investigate problematic values before converting columns to numeric. After conversion, an invalid string simply becomes NA, which removes the evidence of what was actually wrong with the source data.
+When as.numeric() warned that it had introduced NA values, I used the warning to investigate the original values. This helped me find a #NAME? problem in the Braemar dataset that I had not seen in Nairn.
 
-The weather data also demonstrated how the level of aggregation changes what can be seen in a plot. Monthly values mainly showed the seasonal cycle, while yearly averages made the longer-term temperature changes easier to inspect. It was a useful reminder that choosing the correct representation of the data can matter as much as the plotting function itself.
+It showed me why it is useful to check the values before converting them. Once an invalid string has been converted to NA, I cannot see the original problem from that value alone.
 
-The extension also made me think about making the cleaning reusable as a function. The common cleaning steps can be automated, but the results still need to be validated because different datasets may contain additional problems.
+I also compared monthly and yearly weather plots. The monthly data mainly showed seasonal changes, while yearly averages made it easier to look at longer-term temperature changes.
 
-### 24/10/2026
+For the extension, I started thinking about putting the cleaning steps into a function. The same function could be reused, but I would still need to check each dataset for different problems.
+24/10/2026
+Today I started working with custom functions in R. I already know the general idea from other programming languages, but vectorisation is more noticeable in R. For example, I can subtract two vectors without writing an explicit loop.
 
-Today I started working with custom functions in R. Coming from other programming languages, the general idea is familiar, but one noticeable difference is how naturally R functions operate on vectors. For example, subtracting two vectors does not require any explicit iteration because the operation is already vectorised.
+I also used str_flatten() from R for Data Science to create a function that joins a character vector. Then I added a Boolean argument so the function could either join the characters directly or add spaces between them.
 
-I also used str_flatten() from R for Data Science to build a function that joins a character vector. Extending it with a Boolean argument made the function choose between joining characters directly or inserting spaces to create a phrase. This felt much closer to normal application programming than some of the earlier R exercises, because I was starting to wrap existing functionality into reusable behaviour rather than only transforming datasets.
+This felt closer to the type of programming I am used to because I was putting existing functionality into a reusable function.
+25/10/2026
+I continued working with custom functions today. I ended up spending more time on edge cases than on the original exercises.
 
-### 25/10/2026
+My median function worked for normal even and odd vectors, and I reused my earlier mean function to calculate the result for the two middle values. However, a vector containing only NA values caused a problem.
 
-Today I continued working with custom functions and ended up spending more time on edge cases than on the original exercises, which was probably the more useful part.
+After removing the missing values, the vector had a length of zero. My is_even() function treated zero as even, so the median function followed the wrong branch and eventually returned NaN.
 
-The median function was a good example. The basic implementation worked for normal even and odd vectors and I reused my earlier mean function for the two middle values. However, testing a vector containing only NA values exposed a problem I had not considered. After removing the missing values, the vector had a length of zero, and my original is_even() function classified zero as even. This sent the function down the wrong branch and eventually produced NaN.
+I changed the helper logic so that positive even and odd lengths are handled separately, and an empty vector goes into its own branch.
 
-Rather than patching the final result, I changed the helper logic so that positive even and odd lengths are handled separately and an empty vector reaches its own branch. This also made me think about the difference between displaying an error message and what a function should actually return. Returning a string from a function that normally returns numbers would make it awkward to use later, so displaying a message while returning NA seems much cleaner.
+I also thought about what the function should return when it cannot calculate a median. Returning a string would be awkward if I wanted to use the result in another calculation, so displaying a message and returning NA seemed more useful.
 
-I also found myself naturally splitting the median implementation into smaller functions and reusing temp_mean2() rather than repeating the same calculation.
+I split the implementation into smaller functions and reused temp_mean2() instead of repeating the calculation.
+8/11/2026
+I started by checking which columns should be numeric. I created check_numeric_columns() to calculate the percentage of values in each column that could be interpreted as numbers.
 
+The weather columns were around 98–99% numeric, but the extra ...8 column was different. I used inspect_column() to check its values and how often they appeared. Most were NA, with a small number marked Provisional or ||, so I decided not to keep this column.
 
-### 8/11/2026
-I started by checking which columns looked like they should be numeric. Rather than assuming that columns 3–7 were clean numbers, I created check_numeric_columns() to calculate what percentage of each column could be interpreted as numeric. This immediately showed that the weather columns were around 98–99% numeric, while the extra ...8 column was completely different.
+I also created reusable functions for changing column types and combining columns. When combining yyyy and mm, I noticed that a standard R Date needs a day, but the dataset only represents months. I used the zoo package and added support for yearmon to my type-conversion function.
 
-I then created inspect_column() to investigate individual columns and see both the values and how frequently they occurred. This was useful for ...8, where most values were NA and only a small number were marked Provisional or ||. I decided not to keep this column in the cleaned dataset.
+Next, I looked at the weather values that could not be converted to numbers. The main non-numeric value I found was ---. I used a loop over the names of the weather columns instead of calling the same cleaning function five times.
 
-I also created reusable functions for changing column types and combining columns. Combining yyyy and mm exposed an interesting problem: a standard R Date needs a day, while my data only represents months. Instead of inventing a day, I used the zoo package and added yearmon support to my type-conversion function.
+Once the individual steps worked, I combined them into read_clean_weather(filepath). The function takes a filename and returns a cleaned dataset. I then moved the functions into a separate .R file and loaded them with source().
 
-The next step was removing rows where weather measurements could not be converted to numeric values. I first inspected the columns and found that --- was the main non-numeric value. I used a loop over a vector of weather-column names rather than repeating the same function call five times.
+I tested the same code with dunstaffnage_raw.tsv. It worked without creating a separate cleaning script, which was the reason I wanted to make the functions reusable.
 
-Once the individual steps worked, I combined them into read_clean_weather(filepath). This made it possible to give the function a filename and receive a cleaned dataset back. I then moved the functions into a separate .R file and loaded them using source().
+For the extension, I changed the row-cleaning function to use tidy evaluation. With {{columns}}, I could pass unquoted column names to the function and use if_all() instead of looping through them individually. It reminded me slightly of passing property references or expressions in JavaScript, although the way R handles it is different.
 
-The best test was applying the same code to dunstaffnage_raw.tsv. It worked without needing a separate cleaning script, which was really the point of refactoring the original Nairn work into reusable functions.
-
-For the extension task I modified the row-cleaning function to use tidy evaluation. Using {{columns}} allowed me to pass several unquoted column names directly into the function and use if_all() instead of looping through them individually. This reminded me a little of passing property references or expressions around in JavaScript, although R handles it through tidy evaluation rather than normal object indexing.
-
-One thing I would still consider is whether removing an entire row whenever one weather measurement is missing is the best cleaning decision. It produces a completely numeric dataset, but it also removes information from the other measurements in that month. Replacing unavailable measurements with NA could preserve more of the original dataset.
+One thing I still need to consider is whether removing a whole row when one measurement is missing is the right decision. It also removes the other measurements for that month. Keeping the row and replacing the missing measurement with NA might preserve more information.

@@ -24,7 +24,7 @@ for better visualisation x and y
 ggplot(storms, aes(x=name,y=wind))+
 geom_boxplot()
 
-Jasne, teraz widzę format. Insights u Ciebie to krótkie techniczne notatki typu cheat-sheet, a blog to dłuższe własne przemyślenia. Na dziś dopisałbym tak:
+
 Insights
 ### factor
 factor = categorical data with levels
@@ -87,7 +87,6 @@ Looks horrible at first, but it is mostly small rules combined together.
 ### if_any()
 Instead of checking every column separately, I can apply the same condition to all of them.
 
-Jasne. Zrobiłbym to w Twoim dotychczasowym stylu: Insights = krótkie techniczne notatki, Memorables = rzeczy, które szczególnie zwróciły uwagę, a log bardziej jako Twoje faktyczne obserwacje, nie tutorial dla początkującego.
 Insights
 ### regex with multiple columns
 filter(
