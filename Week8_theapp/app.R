@@ -51,6 +51,7 @@ nairn_long <- nairn_clean %>%
 
 #Part 2
 nairn_long
+#dosnt work
 # Create a selectInput() that allows the user to select the measurement (tmax, tmin etc) of their choice.
 # Create a reactive function to filter() the data of the chosen measurement. 
 # Commit your progress.
