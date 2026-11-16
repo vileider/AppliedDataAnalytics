@@ -4,12 +4,33 @@ library(shiny)
 library(tidyverse)
 library(plotly)
 library(zoo)
+
+source("functions/mostly_weather_functions.R")
+nairn_clean <- read_clean_weather2("data/nairn_raw.tsv")
+
+nairn_long <- nairn_clean %>%
+  pivot_longer(
+    cols = -year_month,
+    names_to = "measurement",
+    values_to = "value"
+  )
+
 ui <- fluidPage(
-  "Weather app"
+  "Bogdan's Weather Super APP",
+  #https://mastering-shiny.org/basic-ui.html
+  #Selecet input from chapter 2 basic UI
+  selectInput(
+    inputId = "measurement",
+    label = "Choose a mesurement:",
+    choices = unique(nairn_long$measurement)
+  )
 )
 
 server <- function(input, output, session) {
-  
+  selected_weather <- reactive({
+    nairn_long %>%
+      filter(measurement == input$measurement)
+  })
 }
 
 
@@ -20,8 +41,9 @@ server <- function(input, output, session) {
 # and it works smooth like a charm Listening on http://127.0.0.1:4903
 #I will copy function file and datase as well into wee8app directory
 
-source("functions/mostly_weather_functions.R")
-nairn_clean <- read_clean_weather2("data/nairn_raw.tsv")
+# source("functions/mostly_weather_functions.R")
+# nairn_clean <- read_clean_weather2("data/nairn_raw.tsv")
+#(edit: moved to the top after task 2)
 
 #error:
 # Error in remove_non_numeric_rows(dataset, column) : 
@@ -41,20 +63,29 @@ nairn_clean <- read_clean_weather2("data/nairn_raw.tsv")
 # I added ""unique_quiet": Repair with the unique strategy, quietly."
 #nothing unnecessary prints out now
 #now Coverting to long format all columns apart frm "year_month"
-nairn_long <- nairn_clean %>%
-  pivot_longer(
-    cols = -year_month,
-    names_to = "measurement",
-    values_to = "value"
-  )
+# nairn_long <- nairn_clean %>%
+#   pivot_longer(
+#     cols = -year_month,
+#     names_to = "measurement",
+#     values_to = "value"
+#   )
+#moved highier
 
 
 #Part 2
-nairn_long
-#dosnt work
+
 # Create a selectInput() that allows the user to select the measurement (tmax, tmin etc) of their choice.
 # Create a reactive function to filter() the data of the chosen measurement. 
 # Commit your progress.
+
+nairn_long
+#doesnt work, you lied to me Andrew, I need to use print (;])
+print(nairn_long)
+#I get error:
+# > runApp('C:/projects/AppliedDataAnalytics/Week8_theapp')
+# Error in  'eval(exprs, envir)': did not find object 'nairn_clean'
+#
+#I have to reorganise the code
 
 
 shinyApp(ui = ui, server = server)
