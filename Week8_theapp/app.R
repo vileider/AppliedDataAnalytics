@@ -23,13 +23,29 @@ ui <- fluidPage(
     inputId = "measurement",
     label = "Choose a mesurement:",
     choices = unique(nairn_long$measurement)
-  )
+  ),
+  #https://shiny.posit.co/r/components/outputs/plot-plotly/
+  #about Plot(plotly) in chapter Outputs
+  plotlyOutput(outputId = "weather_plot")
 )
 
 server <- function(input, output, session) {
   selected_weather <- reactive({
     nairn_long %>%
       filter(measurement == input$measurement)
+  })
+  
+  output$weather_plot <- renderPlotly({
+    weather_plot <- ggplot(
+      selected_weather(),
+      aes(x = year_month, y = value))+
+      geom_line() +
+      zoo::scale_x_yearmon(format = "%Y-%m") +
+      labs(title = paste("Nairn:", input$measurment),
+           x = "Years and months",
+          y = input$measurement)
+    
+  ggplotly(weather_plot)
   })
 }
 
@@ -86,6 +102,16 @@ print(nairn_long)
 # Error in  'eval(exprs, envir)': did not find object 'nairn_clean'
 #
 #I have to reorganise the code
+
+
+# Part 3
+# 
+# Add a plotlyOutput() and renderPlotly() to draw a line graph
+# of the chosen variable. (Hint: Use your previous code and create a ggplot,
+# then use ggplotly()).
+# Commit your progress. 
+#I think It is done as in task
+
 
 
 shinyApp(ui = ui, server = server)
