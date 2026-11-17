@@ -26,7 +26,9 @@ ui <- fluidPage(
   ),
   #https://shiny.posit.co/r/components/outputs/plot-plotly/
   #about Plot(plotly) in chapter Outputs
-  plotlyOutput(outputId = "weather_plot")
+  plotlyOutput(outputId = "weather_plot"),
+  #adding another plot (task4 based on week5)
+  plotlyOutput(outputId = "my_weather_trend")
 )
 
 server <- function(input, output, session) {
@@ -46,6 +48,25 @@ server <- function(input, output, session) {
           y = input$measurement)
     
   ggplotly(weather_plot)
+  })
+  
+  # Part 4: reuse the points and smoothing from Week 5, Exercise 5
+  output$my_weather_trend <- renderPlotly({
+    
+   weather_trend <- ggplot(
+      selected_weather(),
+      aes(x = year_month, y = value)
+    ) +
+      geom_point() +
+      geom_smooth() +
+      zoo::scale_x_yearmon(format = "%Y-%m") +
+      labs(
+        title = paste("Nairn: smoothed trend of", input$measurement),
+        x = "Year and month",
+        y = input$measurement
+      )
+    
+    ggplotly(weather_trend)
   })
 }
 
@@ -111,6 +132,16 @@ print(nairn_long)
 # then use ggplotly()).
 # Commit your progress. 
 #I think It is done as in task
+
+# Part 4
+# 
+# Try adding another type of plot. This could be added below
+# the existing plot or as part of a set of tabs. 
+# Commit your progress.
+
+#I hve been already working on simmilar stuff on week5 5
+# I added another plot under the 1st one, plot visualisation is not clear for the user
+# but I am assuming it is just a proof of concept to show an example of shiny app use
 
 
 
