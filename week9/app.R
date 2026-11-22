@@ -32,16 +32,49 @@ source("functions/mostly_weather_functions.R")
 #update I created whole new function to read datasets and clean them
 #directly from folder
 weather_clean <- create_packOf_weathers_from_folder("data")
-print(names(weather_clean))
-print(weather_clean[["nairn_raw.tsv"]])
+#print(names(weather_clean))
+#print(weather_clean[["nairn_raw.tsv"]])
 #I think task 2 is done, I see list(s) returned
 
+#I will try to create ggplot, use map and save it to variable
+saved_plots <- weather_clean %>%
+  map(function(dataset) {
+    
+    ggplot(dataset, aes(
+      x = year_month,
+      y = `tmax (degC)`
+    )) +
+      geom_line() +
+      zoo::scale_x_yearmon(format = "%Y") +
+      labs(
+        x = "Year",
+        y = "Maximum temperature (°C)"
+      )
+  })
+
+#..and now what does it show?
+#saved_plots[[1]]
+#desont work, what about:
+#print(saved_plots[[1]])
+#ok this is working
+
 ui <- fluidPage(
-  "Bogdan's Weather Super APP2"
+  titlePanel("Bogdan's Weather Super APP2"),
+#adding dropdown and space for visualisation(task3... kind of)
+  selectInput(
+    inputId = "station",
+    label = "Choose weather station:",
+    choices = names(saved_plots)
+  ),
+  
+  plotOutput("weather_plot")
 )
 
 server <- function(input, output, session) {
-  
+#displaying my weather_plot
+  output$weather_plot <- renderPlot({
+    print(saved_plots[[input$station]])
+  })
 }
 
 shinyApp(ui = ui, server = server)
