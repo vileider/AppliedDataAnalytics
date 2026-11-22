@@ -79,3 +79,56 @@ read_clean_weather2 <- function(filepath) {
   
   return(dataset)
 }
+
+create_packOf_weathers_from_folder <- function(folder) {
+  
+  station_files <- list.files(
+    folder,
+    pattern = "_raw\\.tsv$",
+    full.names = TRUE
+  )
+  
+  names(station_files) <- basename(station_files)
+  
+  weather_raw <- station_files %>%
+    map(
+      read_tsv,
+      show_col_types = FALSE,
+      name_repair = "unique_quiet"
+    )
+  
+  columns_to_clean <- c(
+    "tmax (degC)",
+    "tmin (degC)",
+    "af (days)",
+    "rain (mm)",
+    "sun (hours)"
+  )
+  
+  weather_clean <- weather_raw %>%
+    map(function(dataset) {
+      
+      dataset <- dataset %>%
+        select(-any_of("...8"))
+      
+      dataset <- combine_columns(
+        dataset, "yyyy", "mm", "year_month"
+      )
+      
+      dataset <- change_column_type(
+        dataset, "year_month", "yearmon"
+      )
+      
+      for (column in columns_to_clean) {
+        dataset <- remove_non_numeric_rows(dataset, column)
+      }
+      
+      for (column in columns_to_clean) {
+        dataset <- change_column_type(dataset, column, "double")
+      }
+      
+      return(dataset)
+    })
+  
+  return(weather_clean)
+}
