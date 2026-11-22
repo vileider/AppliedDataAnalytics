@@ -455,3 +455,15 @@ without passing the names as character strings.
 - Removing invalid rows makes a dataset look clean, but “clean” and “information-preserving” are not the same thing.
 
 - `{{columns}}` is useful when I want a function to receive actual tidyverse column expressions rather than column names stored as strings.
+
+### Insights
+
+map() vs for: map() is useful for applying a function to every element of a list, but it does not automatically make code simpler than a traditional loop.
+
+Lists and indexing: list[1] returns a sublist, while list[[1]] extracts the actual object. This explained why my plot was not displaying as expected.
+
+Plots are objects: A ggplot can be stored, passed to another function and retrieved from a list without being saved as an image.
+
+Reusable functions: Combining file discovery, loading and cleaning into one function makes it easier to process additional weather stations.
+
+Data cleaning: My cleaning approach reduced the Nairn dataset from 1,073 to 946 rows. I need to consider whether removing every row with a missing measurement is appropriate for future analysis.

@@ -86,3 +86,11 @@ I tested the same code with dunstaffnage_raw.tsv. It worked without creating a s
 For the extension, I changed the row-cleaning function to use tidy evaluation. With {{columns}}, I could pass unquoted column names to the function and use if_all() instead of looping through them individually. It reminded me slightly of passing property references or expressions in JavaScript, although the way R handles it is different.
 
 One thing I still need to consider is whether removing a whole row when one measurement is missing is the right decision. It also removes the other measurements for that month. Keeping the row and replacing the missing measurement with NA might preserve more information.
+### 22/11/2026
+This week, I continued working on my weather application, focusing on lists and the purrr package.
+
+I started by using list.files() and map() to load multiple weather datasets into a list. I then created a new function, create_packOf_weathers_from_folder(), which handles finding, loading and cleaning all the datasets automatically.
+
+Initially, I considered replacing my existing for loops with map(), but I realised that doing so made the cleaning process more complicated. I decided to keep the loops where they were easier to understand.
+
+The most interesting part was discovering that ggplot objects can be stored in a list, just like data frames. I used map() to create a separate plot for each weather station and worked on displaying these plots in Shiny using a dropdown menu.
